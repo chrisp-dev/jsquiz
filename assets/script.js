@@ -7,8 +7,8 @@ let runtime = false;
 let container = document.querySelector('.container');
 
 const SOUNDS = {
-    fail: '/assets/button-09.mp3',
-    success: '/assets/button-10.mp3'
+    fail: 'https://github.com/chrisp-dev/jsquiz/blob/master/assets/button-09.mp3',
+    success: 'https://github.com/chrisp-dev/jsquiz/blob/master/assets/button-10.mp3'
 }
 
 const questLog = { correct: 0, incorrect: 0, highscores: [] }
