@@ -7,15 +7,16 @@ let btnAnswers = document.querySelector('.question-box ul');
 let runtime = false;
 let container = document.querySelector('.container');
 
-var inputs = ["https://www.soundjay.com/misc/sounds/fail-trombone-01.mp3",
+// fail/success sounds
+var soundUrls = ["https://www.soundjay.com/misc/sounds/fail-trombone-01.mp3",
             "https://www.soundjay.com/misc/sounds/fail-buzzer-04.mp3"]
  
-
 const SOUNDS = {
-    fail: inputs[0],
-    success: inputs[1],
+    fail: soundUrls[0],
+    success: soundUrls[1],
 }
 
+// score tracker
 const questLog = { correct: 0, incorrect: 0, highscores: [] }
 
 
@@ -30,7 +31,7 @@ function startTimer() {
     btnStart.style.display = 'none';
 
     // start timer
-    if (runtime) clearInterval(runtime);
+    if (runtime) stopTimer();
     runtime = setInterval(function () {
         secondsElapsed++;
         timerDisplay.textContent = totalSeconds-secondsElapsed;
@@ -43,13 +44,13 @@ function startTimer() {
         if (secondsElapsed === totalSeconds) {
             timerDisplay.setAttribute('class','');
             alert('Sorry, you stink');
-            clearInterval(runtime);
+            stopTimer();
         }
     }, 1000);
 }
 
 function stopTimer() {
-
+    clearInterval(runtime);
 }
 
 function restart() {
@@ -70,14 +71,18 @@ function getTotalRuntime() {
 // 6. for fun, store lowest scores
 
 function renderQuests(quest) {
+    let h1 = document.createElement('p');
+    h1.textContent = quest.title;
     let list = document.createElement('ul');
-    questionBox.innerHTML = list;
     quest.choices.forEach(choice => {
         let li = document.createElement('li');
         li.textContent = choice;
         if (quest.answer === choice) li.setAttribute('data-iscorrect', 'true');
-        questionBox.append(li)
+        list.append(li)
     });
+    questionBox.textContent = "";
+    questionBox.appendChild(h1);
+    questionBox.appendChild(list);
 }
 
 function playSound(sound) {
@@ -103,6 +108,18 @@ btnAnswers.addEventListener("click", function(event) {
         playSound(SOUNDS.success);
     } else {
         secondsElapsed+=15;
+        let wa = document.querySelector('.wrong-alert');
+        let top = 75;
+        wa.style.display = 'block';
+        let timer = setInterval(function() {
+            top-=15;
+            wa.style.top = top+"%";
+            if (top === -150) {
+                wa.style.display = 'none';
+                wa.style.top = 50+"%";
+                clearInterval(timer);
+            }
+        },100)
         playSound(SOUNDS.fail);
     }
 })

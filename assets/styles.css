@@ -119,11 +119,27 @@ a {
     flex-flow: column wrap;
 }
 
+.question-box ul {
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+.question-box ul li {
+    width: 100%;
+    line-height: inherit;
+    justify-content: stretch;
+    list-style: none;
+    border: 1px solid grey;
+    margin: 10px;
+    padding: 5px;
+    cursor: help;
+}
+
 .blinking {
     animation: blinkingText 0.8s infinite;
 }
 
-@keyframes blinkingText{
+@keyframes blinkingText {
     0%{color:black}
     49%{color:red}
     50%{color:red}
@@ -134,4 +150,14 @@ a {
 #timer {
     font-size: 8em;
     top:0;
+}
+
+.wrong-alert {
+    position: absolute;
+    display: none;
+    width: 100%;
+    top: 50%;
+    font-size: 3em;
+    color: red;
+    text-shadow: 2px 4px salmon;
 }
