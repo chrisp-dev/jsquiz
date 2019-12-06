@@ -6,9 +6,13 @@ let questionBox = document.querySelector('.question-box');
 let runtime = false;
 let container = document.querySelector('.container');
 
+var inputs = ["https://www.soundjay.com/misc/sounds/fail-trombone-01.mp3",
+            "https://www.soundjay.com/misc/sounds/fail-buzzer-04.mp3"]
+ 
+
 const SOUNDS = {
-    fail: 'https://github.com/chrisp-dev/jsquiz/blob/master/assets/button-09.mp3',
-    success: 'https://github.com/chrisp-dev/jsquiz/blob/master/assets/button-10.mp3'
+    fail: inputs[0],
+    success: inputs[1],
 }
 
 const questLog = { correct: 0, incorrect: 0, highscores: [] }
