@@ -11,15 +11,24 @@
 </head>
 
 <body>
-    <div class="header">
-        <h1>Code Quiz!</h1>
-        <p>Restart</p>
-    </div>
     <div class="container">
+        <div class="header">
+            <h1>Code Quiz!</h1>
+            <p>Restart</p>
+            <p>Example</p>
+        </div>
         <div class="wrap" style="padding:75px;">
             <a href="#" id="start-quiz" class="btn-0">Start Quiz!<span></span></a>
         </div>
-        <div class="question-box">Are you ready?</div>
+        <div class="question-box">
+            Are you ready?
+            <ul>
+                <li data-iscorrect="true">possible answer</li>
+                <li data-iscorrect="false">possible answer</li>
+                <li data-iscorrect="false">possible answer</li>
+                <li data-iscorrect="false">possible answer</li>
+            </ul>
+        </div>
     </div>
     <div id="timer">0</div>
     <script src="assets/questions.js"></script>

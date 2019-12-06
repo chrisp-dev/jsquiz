@@ -73,7 +73,12 @@ a {
     justify-content: space-between;
     line-height: 1.5em;
     height: 2em;
+    width: 100%;
     padding: 15px;
+}
+.header h1 {
+    flex-grow: 1;
+    text-align: left;
 }
 .header p {
     padding: 10px;
@@ -106,11 +111,24 @@ a {
 }
 .question-box {
     height: 200px;
-    width: 200px;
+    width: 100%;
     border: 1px solid salmon;
     align-items: center;
     justify-content: center;
     display: flex;
+    flex-flow: column wrap;
+}
+
+.blinking {
+    animation: blinkingText 0.8s infinite;
+}
+
+@keyframes blinkingText{
+    0%{color:black}
+    49%{color:red}
+    50%{color:red}
+    99%{color:transparent}
+    100%{color:black}
 }
 
 #timer {

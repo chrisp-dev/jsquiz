@@ -3,6 +3,7 @@ let btnStart = document.querySelector('#start-quiz');
 let btnRestart = document.querySelector('.header p');
 let timerDisplay = document.querySelector('#timer');
 let questionBox = document.querySelector('.question-box');
+let btnAnswers = document.querySelector('.question-box ul');
 let runtime = false;
 let container = document.querySelector('.container');
 
@@ -19,6 +20,8 @@ const questLog = { correct: 0, incorrect: 0, highscores: [] }
 
 
 const SEC_PER_QUEST = 15;
+let secondsElapsed = 0;
+let totalSeconds = getTotalRuntime();
 
 // start quiz:
 // 1. timer begins
@@ -29,7 +32,19 @@ function startTimer() {
     // start timer
     if (runtime) clearInterval(runtime);
     runtime = setInterval(function () {
+        secondsElapsed++;
+        timerDisplay.textContent = totalSeconds-secondsElapsed;
 
+        if ((totalSeconds-secondsElapsed) < SEC_PER_QUEST) {
+            timerDisplay.setAttribute('class','blinking');
+        } else {
+            timerDisplay.setAttribute('class','');
+        }
+        if (secondsElapsed === totalSeconds) {
+            timerDisplay.setAttribute('class','');
+            alert('Sorry, you stink');
+            clearInterval(runtime);
+        }
     }, 1000);
 }
 
@@ -38,11 +53,14 @@ function stopTimer() {
 }
 
 function restart() {
-
+    clearInterval(runtime);
+    btnStart.style.display = 'block';
+    timerDisplay.setAttribute('class','');
+    timerDisplay.textContent = 0;
 }
 
 function getTotalRuntime() {
-    return questList.length * SEC_PER_QUEST;
+    return quests.length * SEC_PER_QUEST;
 }
 
 // 2. question appears
@@ -69,6 +87,7 @@ function playSound(sound) {
 
 
 btnStart.addEventListener("click", function (event) {
+    timerDisplay.textContent = totalSeconds;
     startTimer();
 });
 
@@ -76,12 +95,14 @@ btnRestart.addEventListener("click", function (event) {
     restart();
 });
 
-questionBox.addEventListener("click", function(event) {
+btnAnswers.addEventListener("click", function(event) {
     event.preventDefault();
     let isCorrect = event.target.getAttribute('data-iscorrect');
-    if (!isCorrect) {
+    console.log(isCorrect);
+    if (isCorrect === true) {
         playSound(SOUNDS.success);
     } else {
+        secondsElapsed+=15;
         playSound(SOUNDS.fail);
     }
 })
