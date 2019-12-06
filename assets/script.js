@@ -127,33 +127,60 @@ function displayHighscores() {
 }
 
 function renderQuests() {
+    // Check for end condition
     if (questLog.current === quests.length){
         endQuiz();
         questionBox.textContent = "FINISHED";
         return;
     }
+
+    // get the current question
     quest = quests[questLog.current];
 
+    // create p(title)
     let h1 = document.createElement('p');
     h1.textContent = quest.title;
+    
+    // and create ul(question list)
     let list = document.createElement('ul');
+
+    // for each question choice
     quest.choices.forEach(choice => {
+        // and create li(question items)
         let li = document.createElement('li');
         li.textContent = choice;
+
+        // set data-iscorrect to true if the choice === answer
         if (quest.answer === choice) li.setAttribute('data-iscorrect', 'true');
+
+        // add question to question list
         list.append(li)
     });
+
+    // clear the questionBox
     questionBox.textContent = "";
+
+    // append the title
     questionBox.appendChild(h1);
+
+    // append the list
     questionBox.appendChild(list);
 
+    // gather all the question elements
     let answers = document.querySelectorAll('li');
 
+    // setup the click handler
     answers.forEach(l => {
         l.addEventListener('click', addClickEvent);
-    })
+    });
 }
 
+/**
+ * addClickEvent
+ * @description Handles sounds, correct answers, iterating counter for 
+ * displaying which question we are on.
+ * @param {EventListenerOrEventListenerObject} event 
+ */
 function addClickEvent(event) {
     event.preventDefault();
     let isCorrect = event.target.getAttribute('data-iscorrect');
@@ -184,12 +211,17 @@ function addClickEvent(event) {
     }
 }
 
+/**
+ * playSound
+ * @description Takes a sound url and plays it
+ * @param {url} sound 
+ */
 function playSound(sound) {
     let audio = new Audio(sound);
     audio.play();
 }
 
-
+// click event listeners
 btnStart.addEventListener("click", function (event) {
     timerDisplay.textContent = totalSeconds;
     startTimer();
@@ -199,6 +231,7 @@ btnRestart.addEventListener("click", function (event) {
     restart();
 });
 
+// Message > Alert
 function message(msg) {
     let div = document.createElement('div');
     div.setAttribute('style',
@@ -210,4 +243,5 @@ function message(msg) {
     }, 2000)
 }
 
+// I override the window.alert because it sucks a little bit :)
 window.alert = message;
