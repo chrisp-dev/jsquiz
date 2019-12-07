@@ -8,8 +8,9 @@ let runtime = false;
 let container = document.querySelector('.container');
 
 // fail/success sounds
-var soundUrls = ["https://www.soundjay.com/misc/sounds/fail-trombone-01.mp3",
-    "https://www.soundjay.com/misc/sounds/fail-buzzer-04.mp3"]
+var soundUrls = [
+    "https://www.soundjay.com/misc/sounds/fail-trombone-01.mp3",
+    "https://www.soundjay.com/misc/sounds/magic-chime-02.mp3"]
 
 const SOUNDS = {
     fail: soundUrls[0],
