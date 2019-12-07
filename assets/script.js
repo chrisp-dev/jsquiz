@@ -1,6 +1,7 @@
 
 let btnStart = document.querySelector('#start-quiz');
-let btnRestart = document.querySelector('.header p');
+let btnRestart = document.querySelector('#restart');
+let btnHighscores = document.querySelector('#highscores');
 let timerDisplay = document.querySelector('#timer');
 let questionBox = document.querySelector('.question-box');
 let btnAnswers = document.querySelector('.question-box ul');
@@ -230,6 +231,10 @@ btnStart.addEventListener("click", function (event) {
 
 btnRestart.addEventListener("click", function (event) {
     restart();
+});
+
+btnHighscores.addEventListener("click", function(event) {
+    displayHighscores();
 });
 
 // Message > Alert

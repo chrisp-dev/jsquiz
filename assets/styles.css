@@ -3,6 +3,9 @@ html {
     text-align: center;
     background-color: #eeeeee;
 }
+* {    
+    cursor: url("https://img.icons8.com/nolan/64/000000/hand-cursor.png"), auto !important;
+}
 
 html *, html *:before, html *:after {
     box-sizing: border-box;
@@ -105,12 +108,11 @@ a {
 }
 .container {
     display: flex;
-    flex-flow: column nowrap;
+    flex-flow: column wrap;
     justify-content: space-between;
     align-items: center;
 }
 .question-box {
-    height: 200px;
     width: 100%;
     padding: 10px;
     border: 1px solid salmon;
@@ -122,18 +124,26 @@ a {
 
 .question-box ul {
     display: flex;
-    flex-flow: column nowrap;
+    flex-flow: column wrap;
+    width: 100%;
+    padding: 0;
 }
 
-.question-box ul li {
+li {
     width: 100%;
     line-height: inherit;
-    justify-content: stretch;
+    justify-content: space-between;
     list-style: none;
-    border: 1px solid grey;
-    margin: 10px;
-    padding: 5px;
-    cursor: help;
+    border: 1px solid rgba(128, 128, 128, 0.418);
+    padding: 25px;
+    cursor: none;
+    transition: 0.1s all;
+}
+
+li:hover, li:visited, li:active {
+    color: rgb(74, 46, 235);
+    background-color: transparent;
+    box-shadow: 2px 2px 15px blue;
 }
 
 .blinking {
