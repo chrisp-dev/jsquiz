@@ -69,6 +69,7 @@ function restart() {
     questLog.correct = 0;
     questLog.incorrect = 0;
     secondsElapsed = 0;
+    questionBox.textContent = "Are you ready?";
     btnStart.style.display = 'block';
     timerDisplay.setAttribute('class', '');
     timerDisplay.textContent = 0;
