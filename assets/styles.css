@@ -20,7 +20,6 @@ html i, html em, html b, html strong, html span {
     z-index: -1;
 }
 
-
 a {
     text-decoration: none;
     line-height: 80px;
@@ -150,6 +149,10 @@ li:hover, li:visited, li:active {
     animation: blinkingText 0.8s infinite;
 }
 
+.blueblink {
+    animation: blinkBlueText 0.8s infinite;
+}
+
 @keyframes blinkingText {
     0%{color:black}
     49%{color:red}
@@ -157,7 +160,12 @@ li:hover, li:visited, li:active {
     99%{color:transparent}
     100%{color:black}
 }
-
+@keyframes blinkBlueText {
+    0%{color:gold}
+    49%{color:blue}
+    50%{color:blue}
+    100%{color:gold}
+}
 #timer {
     font-size: 8em;
     top:0;

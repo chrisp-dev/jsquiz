@@ -90,6 +90,10 @@ function endQuiz() {
     stopTimer();
     let finalScore = totalSeconds - secondsElapsed;
     
+    // update timer display with final score;
+    timerDisplay.textContent = finalScore;
+    timerDisplay.classList.add('blueblink');
+
     // store highscores
     if (finalScore > questLog.highscores[4].score) {
         let tmp;
@@ -119,9 +123,10 @@ function displayHighscores() {
 
     let ul = document.createElement('ul');
     
-    highscores.forEach((score, i) => {
+    highscores.forEach((high, i) => {
         let li = document.createElement('li');
-        li.textContent = `#${i} -> ${score}`;
+        console.log(high);
+        li.textContent = `#${i+1} ${high.name} -> ${high.score}`;
         ul.append(li);
     });
 
