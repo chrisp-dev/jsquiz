@@ -77,7 +77,7 @@ function restart() {
  * @description returns the total length of the quiz
  */
 function getTotalRuntime() {
-    return quests.length * SEC_PER_QUEST;
+    return questions.length * SEC_PER_QUEST;
 }
 
 /**
