@@ -121,29 +121,45 @@ function getTotalRuntime() {
  * @description Stops timer, posts final score and standing if possible
  */
 function endQuiz() {
-    stopTimer();
+    // Display finished
+    questionBox.textContent = "FINISHED";
+    // calculate final score
     let finalScore = totalSeconds - secondsElapsed;
     
     // update timer display with final score;
     timerDisplay.textContent = finalScore;
     timerDisplay.classList.add('blueblink');
 
-    // store highscores
+    // stop timer
+    stopTimer();
+
+
+    // store updated highscores
     if (finalScore > questLog.highscores[4].score) {
+        let name = prompt('Enter your initials:');
         let tmp;
+        let tmpName;
         let posted = false;
         for (let i = 0; i < questLog.highscores.length; i++) {
             if (!posted && finalScore > questLog.highscores[i].score) {
                 tmp = questLog.highscores[i].score;
+                tmpName = questLog.highscores[i].name;
                 questLog.highscores[i].score = finalScore;
-                questLog.highscores[i].name = new Date();
+                questLog.highscores[i].name = name;
                 posted = true;
                 alert('Congrats you posted the #' + (i+1) + ' score!')
             } else if(posted && tmp > questLog.highscores[i].score) {
                 let newtmp = questLog.highscores[i].score;
+                let newName = questLog.highscores[i].name;
                 questLog.highscores[i].score = tmp;
+                questLog.highscores[i].name = tmpName;
                 tmp = newtmp;
+                tmpName = newName;
             }
+        }
+
+        if (!posted) {
+            alert('Sorry you failed to breach the highscore list :(');
         }
     }
 
@@ -161,17 +177,24 @@ function displayHighscores() {
         let li = document.createElement('li');
         console.log(high);
         li.textContent = `#${i+1} ${high.name} -> ${high.score}`;
+        li.style.fontSize = '1.4em';
+        li.style.fontFamily = 'Comic Sans';
         ul.append(li);
     });
 
     questionBox.append(ul);
 }
 
+/**
+ * renderQuests
+ * @description Display new questions or end the quiz.
+ * Uses global variables to determine end of quiz and next question.
+ */
 function renderQuests() {
     // Check for end condition
     if (questLog.current === quests.length){
+        // end quiz
         endQuiz();
-        questionBox.textContent = "FINISHED";
         return;
     }
 
@@ -179,8 +202,9 @@ function renderQuests() {
     quest = quests[questLog.current];
 
     // create p(title)
-    let h1 = document.createElement('p');
-    h1.textContent = quest.title;
+    let h1 = document.createElement('h1');
+    let textNode = document.createTextNode(quest.title)
+    h1.append(textNode);
     
     // and create ul(question list)
     let list = document.createElement('ul');
@@ -212,30 +236,41 @@ function renderQuests() {
 
     // setup the click handler
     answers.forEach(l => {
-        l.addEventListener('click', addClickEvent);
+        l.addEventListener('click', outcome);
     });
 }
 
 /**
- * addClickEvent
- * @description Handles sounds, correct answers, iterating counter for 
+ * outcome
+ * @description Outcome of the user clicking on an answer.
+ * Handles sounds, correct answers, iterating counter for 
  * displaying which question we are on.
- * @param {EventListenerOrEventListenerObject} event 
  */
-function addClickEvent(event) {
+function outcome(event) {
     event.preventDefault();
     let isCorrect = event.target.getAttribute('data-iscorrect');
     console.log('iscorrect: ' + isCorrect);
     if (isCorrect == 'true') {
+        // play sound based on result
         playSound(SOUNDS.success);
+        // increment qestLog responses
+        // not sure if we need in/correct
         questLog.correct++;
         questLog.current++;
+        
+        // display new question
         renderQuests();
     } else {
+        // increment qestLog responses
+        // not sure if we need in/correct
         questLog.incorrect++;
         questLog.current++;
-        renderQuests();
+        // play sound based on result
+        playSound(SOUNDS.fail);
         secondsElapsed += 15;
+        
+        // display new question
+        renderQuests();
         let wa = document.querySelector('.wrong-alert');
         let top = 75;
         wa.style.display = 'block';
@@ -248,7 +283,6 @@ function addClickEvent(event) {
                 clearInterval(timer);
             }
         }, 100)
-        playSound(SOUNDS.fail);
     }
 }
 
