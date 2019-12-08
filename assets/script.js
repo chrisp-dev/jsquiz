@@ -177,8 +177,6 @@ function displayHighscores() {
         let li = document.createElement('li');
         console.log(high);
         li.textContent = `#${i+1} ${high.name} -> ${high.score}`;
-        li.style.fontSize = '1.4em';
-        li.style.fontFamily = 'Comic Sans';
         ul.append(li);
     });
 
