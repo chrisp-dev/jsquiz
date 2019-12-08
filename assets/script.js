@@ -1,4 +1,5 @@
 
+//#region Init Variables
 let btnStart = document.querySelector('#start-quiz');
 let btnRestart = document.querySelector('#restart');
 let btnHighscores = document.querySelector('#highscores');
@@ -19,7 +20,19 @@ const SOUNDS = {
 }
 
 // score tracker
-const questLog = { current: 0, correct: 0, incorrect: 0, highscores: [{name:'user1',score:0},{name:'user1',score:0},{name:'user1',score:0},{name:'user1',score:0},{name:'user1',score:0}] }
+const questLog = { 
+    current: 0, 
+    correct: 0, 
+    incorrect: 0, 
+    highscores: [
+        {name:'user1',score:0},
+        {name:'user1',score:0},
+        {name:'user1',score:0},
+        {name:'user1',score:0},
+        {name:'user1',score:0}
+    ] 
+}
+
 if(localStorage.getItem('highscores')) {
     questLog.highscores = JSON.parse(localStorage.getItem('highscores'));
 }
@@ -28,40 +41,60 @@ let quest = {};
 const SEC_PER_QUEST = 15;
 let secondsElapsed = 0;
 let totalSeconds = getTotalRuntime();
+//#endregion
 
-// start quiz:
-// 1. timer begins
+//#region 
+
+/**
+ * startTimer
+ * @description Starts the quiz timer
+ */
 function startTimer() {
     // hide start button
     btnStart.style.display = 'none';
+
+    // render questions inside questionbox
     renderQuests();
 
     // start timer
     if (runtime) stopTimer();
     runtime = setInterval(function () {
+        // increment elapsed time and update timerdisplay
         secondsElapsed++;
         timerDisplay.textContent = totalSeconds - secondsElapsed;
 
+        // alert user with blinking text under SEC_PER_QUEST
         if ((totalSeconds - secondsElapsed) < SEC_PER_QUEST) {
             timerDisplay.setAttribute('class', 'blinking');
         } else {
+            // else, remove class
             timerDisplay.setAttribute('class', '');
         }
+
+        // stop quiz if they reach 0 in the timer
         if (secondsElapsed >= totalSeconds) {
+
             timerDisplay.setAttribute('class', '');
-            alert('Sorry, you stink');
+            alert('Sorry, you went below 0.');
+
+            // TODO: store lowest scores and alert with Lowscores
             stopTimer();
         }
     }, 1000);
 }
 
+/**
+ * stopTimer
+ * @description Stops the timer
+ */
 function stopTimer() {
     clearInterval(runtime);
 }
 
 /**
  * restart
- * @description Restarts the quiz
+ * @description Restarts the quiz, updates the questlog,
+ * secondsElapsed, questionBox, timerDisplay, btnStart
  */
 function restart() {
     stopTimer();
