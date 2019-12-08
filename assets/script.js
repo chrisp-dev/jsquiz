@@ -264,12 +264,14 @@ function outcome(event) {
         questLog.incorrect++;
         questLog.current++;
         // play sound based on result
-        playSound(SOUNDS.fail);
         secondsElapsed += 15;
         
         // display new question
         renderQuests();
-        let wa = document.querySelector('.wrong-alert');
+        let wa = document.createElement('div');
+        wa.classList.add('wrong-alert', 'blinking');
+        wa.textContent = `-${SEC_PER_QUEST}`;
+        document.querySelector('body').append(wa);
         let top = 75;
         wa.style.display = 'block';
         let timer = setInterval(function () {
@@ -281,6 +283,7 @@ function outcome(event) {
                 clearInterval(timer);
             }
         }, 100)
+        playSound(SOUNDS.fail); 
     }
 }
 
