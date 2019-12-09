@@ -1,6 +1,8 @@
 
+//#region Init Variables
 let btnStart = document.querySelector('#start-quiz');
-let btnRestart = document.querySelector('.header p');
+let btnRestart = document.querySelector('#restart');
+let btnHighscores = document.querySelector('#highscores');
 let timerDisplay = document.querySelector('#timer');
 let questionBox = document.querySelector('.question-box');
 let btnAnswers = document.querySelector('.question-box ul');
@@ -8,8 +10,9 @@ let runtime = false;
 let container = document.querySelector('.container');
 
 // fail/success sounds
-var soundUrls = ["https://www.soundjay.com/misc/sounds/fail-trombone-01.mp3",
-    "https://www.soundjay.com/misc/sounds/fail-buzzer-04.mp3"]
+var soundUrls = [
+    "https://www.soundjay.com/misc/sounds/fail-trombone-01.mp3",
+    "https://www.soundjay.com/misc/sounds/magic-chime-02.mp3"]
 
 const SOUNDS = {
     fail: soundUrls[0],
@@ -17,7 +20,19 @@ const SOUNDS = {
 }
 
 // score tracker
-const questLog = { current: 0, correct: 0, incorrect: 0, highscores: [{name:'user1',score:0},{name:'user1',score:0},{name:'user1',score:0},{name:'user1',score:0},{name:'user1',score:0}] }
+const questLog = { 
+    current: 0, 
+    correct: 0, 
+    incorrect: 0, 
+    highscores: [
+        {name:'user1',score:0},
+        {name:'user1',score:0},
+        {name:'user1',score:0},
+        {name:'user1',score:0},
+        {name:'user1',score:0}
+    ] 
+}
+
 if(localStorage.getItem('highscores')) {
     questLog.highscores = JSON.parse(localStorage.getItem('highscores'));
 }
@@ -26,40 +41,60 @@ let quest = {};
 const SEC_PER_QUEST = 15;
 let secondsElapsed = 0;
 let totalSeconds = getTotalRuntime();
+//#endregion
 
-// start quiz:
-// 1. timer begins
+//#region 
+
+/**
+ * startTimer
+ * @description Starts the quiz timer
+ */
 function startTimer() {
     // hide start button
     btnStart.style.display = 'none';
+
+    // render questions inside questionbox
     renderQuests();
 
     // start timer
     if (runtime) stopTimer();
     runtime = setInterval(function () {
+        // increment elapsed time and update timerdisplay
         secondsElapsed++;
         timerDisplay.textContent = totalSeconds - secondsElapsed;
 
+        // alert user with blinking text under SEC_PER_QUEST
         if ((totalSeconds - secondsElapsed) < SEC_PER_QUEST) {
             timerDisplay.setAttribute('class', 'blinking');
         } else {
+            // else, remove class
             timerDisplay.setAttribute('class', '');
         }
+
+        // stop quiz if they reach 0 in the timer
         if (secondsElapsed >= totalSeconds) {
+
             timerDisplay.setAttribute('class', '');
-            alert('Sorry, you stink');
+            alert('Sorry, you went below 0.');
+
+            // TODO: store lowest scores and alert with Lowscores
             stopTimer();
         }
     }, 1000);
 }
 
+/**
+ * stopTimer
+ * @description Stops the timer
+ */
 function stopTimer() {
     clearInterval(runtime);
 }
 
 /**
  * restart
- * @description Restarts the quiz
+ * @description Restarts the quiz, updates the questlog,
+ * secondsElapsed, questionBox, timerDisplay, btnStart
  */
 function restart() {
     stopTimer();
@@ -67,6 +102,7 @@ function restart() {
     questLog.correct = 0;
     questLog.incorrect = 0;
     secondsElapsed = 0;
+    questionBox.textContent = "Are you ready?";
     btnStart.style.display = 'block';
     timerDisplay.setAttribute('class', '');
     timerDisplay.textContent = 0;
@@ -77,7 +113,7 @@ function restart() {
  * @description returns the total length of the quiz
  */
 function getTotalRuntime() {
-    return quests.length * SEC_PER_QUEST;
+    return questions.length * SEC_PER_QUEST;
 }
 
 /**
@@ -85,25 +121,45 @@ function getTotalRuntime() {
  * @description Stops timer, posts final score and standing if possible
  */
 function endQuiz() {
-    stopTimer();
+    // Display finished
+    questionBox.textContent = "FINISHED";
+    // calculate final score
     let finalScore = totalSeconds - secondsElapsed;
     
-    // store highscores
+    // update timer display with final score;
+    timerDisplay.textContent = finalScore;
+    timerDisplay.classList.add('blueblink');
+
+    // stop timer
+    stopTimer();
+
+
+    // store updated highscores
     if (finalScore > questLog.highscores[4].score) {
+        let name = prompt('Enter your initials:');
         let tmp;
+        let tmpName;
         let posted = false;
         for (let i = 0; i < questLog.highscores.length; i++) {
             if (!posted && finalScore > questLog.highscores[i].score) {
                 tmp = questLog.highscores[i].score;
+                tmpName = questLog.highscores[i].name;
                 questLog.highscores[i].score = finalScore;
-                questLog.highscores[i].name = new Date();
+                questLog.highscores[i].name = name;
                 posted = true;
                 alert('Congrats you posted the #' + (i+1) + ' score!')
             } else if(posted && tmp > questLog.highscores[i].score) {
                 let newtmp = questLog.highscores[i].score;
+                let newName = questLog.highscores[i].name;
                 questLog.highscores[i].score = tmp;
+                questLog.highscores[i].name = tmpName;
                 tmp = newtmp;
+                tmpName = newName;
             }
+        }
+
+        if (!posted) {
+            alert('Sorry you failed to breach the highscore list :(');
         }
     }
 
@@ -111,26 +167,35 @@ function endQuiz() {
     displayHighscores();
 }
 
+/**
+ * 
+ */
 function displayHighscores() {
     let highscores = JSON.parse(localStorage.getItem('highscores'));
     questionBox.textContent = "";
 
     let ul = document.createElement('ul');
     
-    highscores.forEach((score, i) => {
+    highscores.forEach((high, i) => {
         let li = document.createElement('li');
-        li.textContent = `#${i} -> ${score}`;
+        console.log(high);
+        li.textContent = `#${i+1} ${high.name} -> ${high.score}`;
         ul.append(li);
     });
 
     questionBox.append(ul);
 }
 
+/**
+ * renderQuests
+ * @description Display new questions or end the quiz.
+ * Uses global variables to determine end of quiz and next question.
+ */
 function renderQuests() {
     // Check for end condition
     if (questLog.current === quests.length){
+        // end quiz
         endQuiz();
-        questionBox.textContent = "FINISHED";
         return;
     }
 
@@ -138,8 +203,9 @@ function renderQuests() {
     quest = quests[questLog.current];
 
     // create p(title)
-    let h1 = document.createElement('p');
-    h1.textContent = quest.title;
+    let h1 = document.createElement('h1');
+    let textNode = document.createTextNode(quest.title)
+    h1.append(textNode);
     
     // and create ul(question list)
     let list = document.createElement('ul');
@@ -171,31 +237,50 @@ function renderQuests() {
 
     // setup the click handler
     answers.forEach(l => {
-        l.addEventListener('click', addClickEvent);
+        l.addEventListener('click', outcome);
     });
 }
 
 /**
- * addClickEvent
- * @description Handles sounds, correct answers, iterating counter for 
+ * outcome
+ * @description Outcome of the user clicking on an answer.
+ * Handles sounds, correct answers, iterating counter for 
  * displaying which question we are on.
- * @param {EventListenerOrEventListenerObject} event 
  */
-function addClickEvent(event) {
+function outcome(event) {
     event.preventDefault();
     let isCorrect = event.target.getAttribute('data-iscorrect');
     
     if (isCorrect == 'true') {
+        // play sound based on result
         playSound(SOUNDS.success);
+        // increment qestLog responses
+        // not sure if we need in/correct
         questLog.correct++;
         questLog.current++;
+        
+        // display new question
         renderQuests();
     } else {
+        // increment qestLog responses
+        // not sure if we need in/correct
         questLog.incorrect++;
         questLog.current++;
-        renderQuests();
+        // play sound based on result
         secondsElapsed += 15;
-        let wa = document.querySelector('.wrong-alert');
+        
+        // display new question
+        renderQuests();
+        alertFail();
+        playSound(SOUNDS.fail); 
+    }
+}
+
+function alertFail() {
+    let wa = document.createElement('div');
+        wa.classList.add('wrong-alert', 'blinking');
+        wa.textContent = `-${SEC_PER_QUEST}`;
+        document.querySelector('body').append(wa);
         let top = 75;
         wa.style.display = 'block';
         let timer = setInterval(function () {
@@ -207,8 +292,6 @@ function addClickEvent(event) {
                 clearInterval(timer);
             }
         }, 100)
-        playSound(SOUNDS.fail);
-    }
 }
 
 /**
@@ -231,6 +314,10 @@ btnRestart.addEventListener("click", function (event) {
     restart();
 });
 
+btnHighscores.addEventListener("click", function(event) {
+    displayHighscores();
+});
+
 // Message > Alert
 function message(msg) {
     let div = document.createElement('div');
@@ -240,7 +327,7 @@ function message(msg) {
     container.append(div);
     setTimeout(function () {
         container.removeChild(div);
-    }, 2000)
+    }, 5000)
 }
 
 // I override the window.alert because it sucks a little bit :)
