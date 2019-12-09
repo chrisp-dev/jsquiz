@@ -167,6 +167,9 @@ function endQuiz() {
     displayHighscores();
 }
 
+/**
+ * 
+ */
 function displayHighscores() {
     let highscores = JSON.parse(localStorage.getItem('highscores'));
     questionBox.textContent = "";
@@ -247,7 +250,7 @@ function renderQuests() {
 function outcome(event) {
     event.preventDefault();
     let isCorrect = event.target.getAttribute('data-iscorrect');
-    console.log('iscorrect: ' + isCorrect);
+    
     if (isCorrect == 'true') {
         // play sound based on result
         playSound(SOUNDS.success);
@@ -268,7 +271,13 @@ function outcome(event) {
         
         // display new question
         renderQuests();
-        let wa = document.createElement('div');
+        alertFail();
+        playSound(SOUNDS.fail); 
+    }
+}
+
+function alertFail() {
+    let wa = document.createElement('div');
         wa.classList.add('wrong-alert', 'blinking');
         wa.textContent = `-${SEC_PER_QUEST}`;
         document.querySelector('body').append(wa);
@@ -283,8 +292,6 @@ function outcome(event) {
                 clearInterval(timer);
             }
         }, 100)
-        playSound(SOUNDS.fail); 
-    }
 }
 
 /**
@@ -320,7 +327,7 @@ function message(msg) {
     container.append(div);
     setTimeout(function () {
         container.removeChild(div);
-    }, 2000)
+    }, 5000)
 }
 
 // I override the window.alert because it sucks a little bit :)
