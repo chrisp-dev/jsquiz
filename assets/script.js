@@ -184,7 +184,7 @@ function renderQuests() {
 function addClickEvent(event) {
     event.preventDefault();
     let isCorrect = event.target.getAttribute('data-iscorrect');
-    console.log('iscorrect: ' + isCorrect);
+    
     if (isCorrect == 'true') {
         playSound(SOUNDS.success);
         questLog.correct++;
@@ -235,7 +235,7 @@ btnRestart.addEventListener("click", function (event) {
 function message(msg) {
     let div = document.createElement('div');
     div.setAttribute('style',
-        'position:absolute;margin-top:20px;top:0;background:rgba(20,222,20,0.8);width:auto;height:50px;line-height:1.5em;font-size:1.5em;color:green;border:1px solid green;')
+        'position:absolute;margin-top:30px;top:0;background:rgba(20,222,20,0.8);width:auto;height:50px;line-height:1.5em;font-size:1.5em;color:green;border:1px solid green;')
     div.textContent = msg;
     container.append(div);
     setTimeout(function () {
